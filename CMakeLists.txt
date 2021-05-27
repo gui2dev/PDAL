@@ -30,7 +30,7 @@ mark_as_advanced(CMAKE_VERBOSE_MAKEFILE)
 # Must be changed if there is an ABI change.  This builds the SONAME
 # that's embedded in the library itself.
 #
-set(PDAL_SOLIB_MAJOR 12)
+set(PDAL_SOLIB_MAJOR 13)
 #
 # Change if there's a new release with no ABI change
 #
@@ -39,7 +39,7 @@ set(PDAL_SOLIB_MINOR 0)
 # Build number.  Increment for builds within minor versions.  Probably
 # always 0 for PDAL
 #
-set(PDAL_SOLIB_BUILD 1)
+set(PDAL_SOLIB_BUILD 0)
 
 
 set(PDAL_API_VERSION ${PDAL_SOLIB_MAJOR})
@@ -50,7 +50,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Name of C++ library
-
 #
 # To facilitate one-library linking, we do special things for various platforms.
 #
@@ -247,7 +246,6 @@ if (NOT PDAL_HAVE_LZMA)
 endif()
 if (NOT PDAL_HAVE_LAZPERF)
     file(GLOB LAZPERF_SRCS
-        ${PDAL_SRC_DIR}/compression/LazPerfCompression.cpp
         ${PDAL_SRC_DIR}/compression/LazPerfVlrCompression.cpp)
     list(REMOVE_ITEM SRCS ${LAZPERF_SRCS})
 endif()
@@ -291,6 +289,7 @@ target_link_libraries(${PDAL_BASE_LIB_NAME}
         ${PDAL_UTIL_LIB_NAME}
         ${PDAL_ARBITER_LIB_NAME}
         ${PDAL_KAZHDAN_LIB_NAME}
+        ${LAZPERF_LIBRARY}
     INTERFACE
         ${PDAL_LIBDIR}
 )

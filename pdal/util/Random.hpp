@@ -1,5 +1,5 @@
 /******************************************************************************
-* Copyright (c) 2014, Howard Butler (howard@hobu.co)
+* Copyright (c) 2021, Hobu Inc.
 *
 * All rights reserved.
 *
@@ -13,7 +13,7 @@
 *       notice, this list of conditions and the following disclaimer in
 *       the documentation and/or other materials provided
 *       with the distribution.
-*     * Neither the name of Hobu, Inc. or Flaxen Geo Consulting nor the
+*     * Neither the name of Hobu, Inc. nor the
 *       names of its contributors may be used to endorse or promote
 *       products derived from this software without specific prior
 *       written permission.
@@ -31,48 +31,36 @@
 * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 * OF SUCH DAMAGE.
 ****************************************************************************/
+
 #pragma once
 
-#include "Compression.hpp"
+#include <cstdint>
+#include <random>
+#include <string>
+#include <vector>
 
-#include <pdal/DimType.hpp>
+#include "pdal_util_export.hpp"
 
 namespace pdal
 {
+namespace Utils
+{
 
-class LazPerfCompressorImpl;
-
-class LazPerfCompressor : public Compressor
+class Random
 {
 public:
-    PDAL_DLL LazPerfCompressor(BlockCb cb, const DimTypeList& dims);
-    PDAL_DLL ~LazPerfCompressor();
+    PDAL_DLL Random();
+    PDAL_DLL Random(int32_t seed);
+    PDAL_DLL Random(const std::vector<int32_t> seed);
+    PDAL_DLL Random(const std::string& seed);
 
-    PDAL_DLL void compress(const char *buf, size_t bufsize);
-    PDAL_DLL void done();
+    PDAL_DLL std::mt19937& generator();
 
-private:
-    std::unique_ptr<LazPerfCompressorImpl> m_impl;
-};
-
-
-class LazPerfDecompressorImpl;
-
-// NOTE - The LazPerfDecompressor is different from others, even though the
-//   interface is the same, in that it always executes the callback after
-//   a point's worth of data is read.
-class LazPerfDecompressor : public Decompressor
-{
-public:
-    PDAL_DLL LazPerfDecompressor(BlockCb cb, const DimTypeList& dims,
-        size_t numPoints);
-    PDAL_DLL ~LazPerfDecompressor();
-
-    PDAL_DLL void decompress(const char *buf, size_t bufsize);
+    PDAL_DLL static unsigned int quick();
 
 private:
-    std::unique_ptr<LazPerfDecompressorImpl> m_impl;
+    std::mt19937 m_generator;
 };
 
+} // namespace Utils
 } // namespace pdal
-
